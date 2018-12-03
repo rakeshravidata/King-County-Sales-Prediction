@@ -89,6 +89,13 @@ ridge.reg.coefficients <- function(y.vect, X0.mat, plot=TRUE, grid.size=25, grid
   return(out.list)
 }
 
-# ridge.reg.coefficients(df$price, df[,-1]) 
-# this is giving me an error I don't remember exactly how I resolved when we did the homework
 
+# Using the df from  Data Cleaning =====
+
+
+ridge.reg.coefficients(df$price, as.matrix(df[,-1]))
+# this is giving me an error I don't remember exactly how I resolved when we did the homework
+# try onehot encoding each of the categorical variables that we can (waterfront, view, sqft_basement, yr_renovated)
+# might suggest removing the time stuff for the ridge regression
+
+# which(is.na(df)) # Nothing is missing!
