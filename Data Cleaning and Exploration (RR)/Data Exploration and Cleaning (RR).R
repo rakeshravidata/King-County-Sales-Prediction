@@ -56,7 +56,7 @@ df$id = NULL
 library(pacman)
 pacman:: p_load(Metrics, car, corrplot, caTools, ggplot2, DAAG)
 df$date = NULL
-corr = cor(df[, 1:20])
+corr = cor(df[, 1:21])
 corrplot(corr, method = "color", outline = T, cl.pos = 'n', rect.col = "black",  tl.col = "indianred4", addCoef.col = "black", number.digits = 2, number.cex = 0.60, tl.cex = 0.7, cl.cex = 1, col = colorRampPalette(c("green4","white","red"))(100))
 
 #There are lots of correlations between variables that have over 0.6 as their coefficients
@@ -191,7 +191,8 @@ model = lm(formula = price ~  bedrooms + bathrooms + floors + waterfront + view 
            data = trainingSet)
 summary(model)
 
-# Bedrooms are not statisticaaly significant, so we would omit it.
+# Bedrooms are not statisticaaly significant, so we should omit it as removing it does not decreases the adjusted
+# r-squared value by a lot
 model = lm(formula = price ~  bathrooms + floors + waterfront + view + condition +
              + sqft_basement + yr_renovated + zipcode + sqft_living15 + sqft_living + grade,
            data = trainingSet)
@@ -229,4 +230,61 @@ modelOutput <- cbind(testSet, pricePrediction)
 #Test with RMSE
 library(hydroGOF)
 rmse(modelOutput$price, modelOutput$pricePrediction)
+
+#Influence Diagnostics and Outlier Treatment
+
+#Perform Influence Diagnostics
+library(olsrr)
+df$price = log(df$price)
+model = lm(formula = price ~.,
+           data = df)
+
+summary(model)
+#influence(model)
+
+#---------------------------------------------------------------------------------------------------------------------
+# The values of DFFITS may be calculated using the function "dffits":                                     
+plot(dffits(model), pch=2, bg='orange', cex=2, ylab="DFFITS")
+
+#the plot doesnt show too many outliers and influence points but it does warrant further investigqtion
+
+#----------------------------------------------------------------------------------------------------------------------
+# The values of DFBETAS may be calculated using the function "dfbetas":                                    
+plot(dfbetas(model)[,'sqft_living'], pch=2, bg='orange', cex=2, ylab="DFBETA (sqft_living)")
+
+
+#---------------------------------------------------------------------------------------------------------------------
+#Cook's Distance
+cook <- cooks.distance(model)
+
+# The associated cutoff value for identifying an         
+# influential observation is                             
+cut.inf <- 1
+
+#plot to indicate outliers
+plot(cook, pch="*", cex=2, main="Influential Obs by Cooks distance")  # plot cook's distance
+abline(h = 4*mean(cook, na.rm=T), col="red")  # add cutoff line
+text(x=1:length(cook)+1, y=cook, labels=ifelse(cook>4*mean(cook, na.rm=T),names(cook),""), col="red")  # add labels
+
+#another way of visualizing the same
+plot(cooks.distance(model), pch=2, bg='orange', cex=2, ylab="Cook's distance")
+
+#displaying influential points
+df[which(cooks.distance(model) > 0.1),]
+
+influential <- as.numeric(names(cook)[(cook > 4*mean(cook, na.rm=T))])  # influential row numbers
+nrow(df[influential, ])
+
+#removing outliers from the dataset as the number of outliers is lower than 5% of the dataset
+
+df.after.cd = df[-influential, ]
+
+
+model2 = lm(formula = price ~  bathrooms + floors + waterfront + view + condition +
+              + sqft_basement + yr_renovated + zipcode + sqft_living15 + sqft_living + grade,
+            data = df.after.cd)
+
+summary(model2)
+
+#R-squared jumps from 0.87 to 0.88
 
