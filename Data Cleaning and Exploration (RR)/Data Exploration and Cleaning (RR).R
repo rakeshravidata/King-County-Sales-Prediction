@@ -1,5 +1,17 @@
 ### Model Building
 
+#install packages
+install.packages("pacman")
+install.packages("caTools")
+install.packages("ggplot2")
+install.packages("hydroGOF")
+install.packages("olsrr")
+library(pacman)
+library(caTools)
+library(ggplot2)
+library(hydroGOF)
+library(olsrr)
+
 # reading data into R
 setwd("/Users/rakeshravi/Documents/Linear Models - R/Project/")
 df <- read.csv("kc_house_data.csv", stringsAsFactors = FALSE)
@@ -203,7 +215,7 @@ y_pred = predict(model, newdata = trainingSet)
 
 
 # Visualizing the training set results
-library(ggplot2)
+
 ggplot() +
   geom_point(aes(x = trainingSet$sqft_living, y = trainingSet$price),
              colour = 'red') +
@@ -228,13 +240,11 @@ pricePrediction = predict(model, newdata = testSet)
 modelOutput <- cbind(testSet, pricePrediction)
 
 #Test with RMSE
-library(hydroGOF)
 rmse(modelOutput$price, modelOutput$pricePrediction)
 
 #Influence Diagnostics and Outlier Treatment
 
 #Perform Influence Diagnostics
-library(olsrr)
 df$price = log(df$price)
 model = lm(formula = price ~.,
            data = df)
