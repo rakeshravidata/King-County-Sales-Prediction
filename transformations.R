@@ -31,8 +31,8 @@ boxcox(price ~ ., data=df, lambda=seq(from=0, to=.2, by=0.01)) # cleaning before
 
 # ?boxcox
 
-hist(house.data$price ,xlab = "Price",col = "yellow", xlim = c(0,10000000), breaks = 200)
-hist(log(house.data$price) ,xlab = "Price",col = "yellow", xlim = c(10,17), breaks = 50)
+hist(house.data$price ,xlab = "Price",col = "yellow", xlim = c(0,10000000), breaks = 100, main= "Frequency of House Prices \n(Unadjusted)")
+hist(log(house.data$price) ,xlab = "Price",col = "yellow", xlim = c(10,17), breaks = 50, main= "Frequency of House Prices \n(Log Transform)")
 
 df$price = log(df$price)
 
