@@ -141,6 +141,7 @@ stepwise.selection <- function(alpha.in, alpha.out, resp.name, reg.names, data.n
 df<-read_csv('data/kc_house_data.csv')
 df$year <- format(as.Date(df$date, format="%m/%d/%Y"),"%Y")
 df$month <-format(as.Date(df$date, format="%m/%d/%Y"),"%m")
+df$price =log(df$price)
 df$date = NULL
 df$id<-NULL
 df$lat<-NULL
