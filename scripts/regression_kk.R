@@ -3,11 +3,7 @@ library(readr)
 # Import data
 df <- read_csv("data/kc_house_data.csv")
 
-# Select useful columns
 colnames(df)
-# [1] "id"            "date"          "price"         "bedrooms"      "bathrooms"     "sqft_living"   "sqft_lot"     
-# [8] "floors"        "waterfront"    "view"          "condition"     "grade"         "sqft_above"    "sqft_basement"
-# [15] "yr_built"      "yr_renovated"  "zipcode"       "lat"           "long"          "sqft_living15" "sqft_lot15"  
 
 numberOfNA = length(which(is.na(df) == T))
 if(numberOfNA > 0)
