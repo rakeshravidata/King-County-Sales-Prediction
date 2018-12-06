@@ -32,7 +32,7 @@ k <- ncol(df) - 1
 F <- (SS.R / 10) / (SS.Res / (n - k - 1))
 # F statistics
 F
-# [1] 2079.985
+# [1] 5222.791
 pf <- pf(abs(F), df1=k, df2=n-k-1, lower.tail=FALSE)
 # P-value of the F statistics
 pf
@@ -114,6 +114,21 @@ data.lm <- lm(price~., df)
 
 summary(data.lm)
 # R-sq = 0.8862
+
+price.fit <- fitted(data.lm)
+SS.Res <- sum((price - price.fit)^2)
+SS.R <- sum((price.fit - mean(price))^2)
+n <- nrow(df)
+k <- ncol(df) - 1
+F <- (SS.R / 10) / (SS.Res / (n - k - 1))
+# F statistics
+F
+# [1] 1475.468
+pf <- pf(abs(F), df1=k, df2=n-k-1, lower.tail=FALSE)
+# P-value of the F statistic
+pf
+# [1] 0
+# The model is significant
 
 
 #Using cook's d to check for influence points and removing them.

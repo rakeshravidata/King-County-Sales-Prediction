@@ -207,7 +207,14 @@ S.55 <- sum(x5.cent^2)
 x5.scl <- x5.cent / sqrt(S.55)
 
 
-X.mat.scl <- as.matrix(cbind(x2.scl, x3.scl, x4.scl, x5.scl))
+x6.bar <- mean(df$sqft_lot)
+x6.cent <- df$sqft_lot15 - x6.bar
+S.66 <- sum(x6.cent^2)
+x6.scl <- x6.cent / sqrt(S.66)
+
+
+
+X.mat.scl <- as.matrix(cbind(x2.scl, x3.scl, x4.scl, x5.scl,x6.scl))
 
 XpX.mat.scl <- t(X.mat.scl) %*% X.mat.scl
 Xpy.mat.scl <- t(X.mat.scl) %*% y.scl
