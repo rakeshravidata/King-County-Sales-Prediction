@@ -1,7 +1,7 @@
 library(dplyr)
 library(readr)
 # Import data
-df <- read_csv("data/kc_house_data.csv")
+df <- read_csv('C:/Users/karan/Documents/GitHub/STAT6021_42/data/kc_house_data.csv')
 
 colnames(df)
 
@@ -154,11 +154,17 @@ text(x=1:length(cook)+1, y=cook, labels=ifelse(cook>4*mean(cook, na.rm=T),names(
 df.after.cd = df[-influential[!is.na(influential)], ]
 
 #Create a new, final model with cleaned dataset
-data.lm.after.cd<-lm(log(price)~.,data=df.after.cd)
+data.lm.after.cd<-lm(price~.,data=df.after.cd)
 
 summary(data.lm.after.cd)
 
 #R^2 of 0.9063
+
+df.after.cd$sqft_basement[df.after.cd$sqft_basement != 0] = 1
+df.after.cd$sqft_basement = as.factor(df.after.cd$sqft_basement)
+data.lm.after.cd2<-lm(price~.,data=df.after.cd)
+
+summary(data.lm.after.cd2)
 
 # Test the significance of regression
 price <- df.after.cd$price
