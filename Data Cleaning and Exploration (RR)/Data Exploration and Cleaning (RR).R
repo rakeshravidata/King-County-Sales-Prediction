@@ -1,12 +1,12 @@
 ### Model Building
 
 #install packages
-install.packages("pacman")
-install.packages("caTools")
-install.packages("ggplot2")
-install.packages("hydroGOF")
-install.packages("olsrr")
-library(pacman)
+# install.packages("pacman")
+# install.packages("caTools")
+# install.packages("ggplot2")
+# install.packages("hydroGOF")
+# install.packages("olsrr")
+# library(pacman)
 library(caTools)
 library(ggplot2)
 library(hydroGOF)
@@ -15,6 +15,7 @@ library(olsrr)
 # reading data into R
 setwd("/Users/rakeshravi/Documents/Linear Models - R/Project/")
 df <- read.csv("kc_house_data.csv", stringsAsFactors = FALSE)
+str(df)
 
 # Splitting into test and training samples
 set.seed(999)
@@ -97,7 +98,7 @@ head(df)
 
 #Box plots
 # Boxplot between price and bedrooms
-boxplot(df[, 1] ~ df[, 2], main = 'Price vs Bedrooms', col=c("blue","red"))
+boxplot(df[, 1] ~ df[, 2], main = 'Price vs Bedrooms', col=c("blue","red"), xlab="Bedrooms", ylab="Log(Sale Price)")
 #bedrooms does not seem to have a linear relationship with price
 #for 11 and 33 number of bedrooms, there are hardly any houses.
 
@@ -107,13 +108,14 @@ print(subset(df, df$bedrooms > 10))
 #there are only two houses and it looks like they do not have nearly enough bathrooms for this house to 
 #really exist in real life. These looks obvious data entry error and will be removed from the dataset.
 df = df[df$bedrooms <= 10, ]
+max(df$price)
 
 #because there are only ten levels of bedrooms, it makes sense to convert into a factor without increasing the 
 #dimensionality of the dataset.
 df$bedrooms = as.factor(df$bedrooms)
 
 # Boxplot between price and bathrooms
-boxplot(df[, 1] ~ df[, 3], main = 'Price vs Bathrooms', col=c("blue","red"))
+boxplot(df[, 1] ~ df[, 3], main = 'Price vs Bathrooms', col=c("blue","red"), xlab="Bathrooms", ylab="Log(Sale Price)")
 #there seems to be a linear relationship betweem Price and Bathrooms
 
 # Boxplot between price and sqft_living
@@ -121,38 +123,44 @@ boxplot(df[, 1] ~ df[, 4], main = 'Price vs Sqft_living', col=c("blue","red"))
 #there is a pseudo-linear relationship
 
 # Boxplot between price and floors
-boxplot(df[, 1] ~ df[, 5], main = 'Price vs floors', col=c("blue","red"))
+boxplot(df[, 1] ~ df[, 5], main = 'Price vs floors', col=c("blue","red"),  xlab="Floors", ylab="Log(Sale Price)")
+# View is a categorical value. )
 
 #Floors dont show a pattern and are clearly categorical so converting it to a factor
 
 df$floors = as.factor(df$floors)
 
 # Boxplot between price and waterfront
-boxplot(df[, 1] ~ df[, 6], main = 'Price vs waterfront', col=c("blue","red"))
+boxplot(df[, 1] ~ df[, 6], main = 'Price vs waterfront', col=c("blue","red"), xlab="Waterfront", ylab="Log(Sale Price)")
 # Waterfront are clearly a categorical value. 
 # Converting it into factor
 df$waterfront = as.factor(df$waterfront)
 
 # Boxplot between price and view
-boxplot(df[, 1] ~ df[, 7], main = 'Price vs View', col=c("blue","red"))
+boxplot(df[, 1] ~ df[, 7], main = 'Price vs View', col=c("blue","red"), xlab="View", ylab="Log(Sale Price)")
 # View is a categorical value. 
 # Converting it into factor
 df$view= as.factor(df$view)
 
 # Boxplot between price and condition
-boxplot(df[, 1] ~ df[, 8], main = 'Price vs Condition', col=c("blue","red"))
+boxplot(df[, 1] ~ df[, 8], main = 'Price vs Condition', col=c("blue","red"),  xlab="Condition", ylab="Log(Sale Price)")
+# View is a categorical value. )
 # Condition is clearly a categorical value. 
 # Converting it into factor
 df$condition = as.factor(df$condition)
 
 # Boxplot between price and grade
-boxplot(df[, 1] ~ df[, 9], main = 'Price vs Grade', col=c("blue","red"))
+boxplot(df[, 1] ~ df[, 9], main = 'Price vs Grade', col=c("blue","red"),  xlab="Grade", ylab="Log(Sale Price)")
+# View is a categorical value. )
 #there is a linear relationship
 
 # Boxplot between price and sqft_basement
-boxplot(df[, 1] ~ df[, 10], main = 'Price vs Sqft_basement', col=c("blue","red"))
+plot(df[, 1] ~ df[, 12], main = 'Price vs Sqft_basement', xlab="Area of Basement", ylab="Log(Sale Price)")
 #there is a linear relationship
 
+# Boxplot between price and sqft_above
+plot(df[, 1] ~ df[, 11], main = 'Price vs Sqft_above',  xlab="Area Above the Ground", ylab="Log(Sale Price)")
+#as the area above the grtound follows the same trend as the overall 
 
 # Checking the number of houses that do not have a basement
 length(df$sqft_basement[df$sqft_basement == 0])
@@ -174,17 +182,17 @@ df$yr_renovated = as.factor(df$yr_renovated)
 
 
 # Boxplot between price and zipcode
-boxplot(df[, 1] ~ df[, 12], main = 'Price vs zipcode', col=c("blue","red"))
+boxplot(df[, 1] ~ df[, 12], main = 'Price vs zipcode', col=c("blue","red"), xlab="Zipcode", ylab="Log(Sale Price)")
 # Condition is clearly a categorical value. 
 # Converting it into factor
 df$zipcode = as.factor(df$zipcode)
 
 #boxplot between price and sqft_kliving15
-boxplot(df[, 1] ~ df[, 16], main = 'Price vs sqft_living15', col=c("blue","red"))
+plot(df[, 1] ~ df[, 16], main = 'Price vs Size in Square Foot (2015)', xlab="Sqft Living 2015", ylab="Log(Sale Price)")
 #there is indication of a possible linear relationship
 
 # Plot for Price
-plot(df[, 3], df[, 1], main = 'Price vs Sqft_living')
+plot(df[, 4], df[, 1], main = 'Price vs Size in Square Foot ', xlab="Sqft Living", ylab="Log(Sale Price)")
 # there is a house at the bottom right with a really high value of sqft but low price which seems a bit odd
 
 
@@ -215,7 +223,7 @@ y_pred = predict(model, newdata = trainingSet)
 
 
 # Visualizing the training set results
-
+.
 ggplot() +
   geom_point(aes(x = trainingSet$sqft_living, y = trainingSet$price),
              colour = 'red') +
